@@ -10,11 +10,13 @@ logger = logging.getLogger(__name__)
 
 def fixup_elf(path):
     dirname = os.path.dirname(path)
-    rpath = os.path.relpath(LIBDIR, dirname)
-    rpath = os.path.join('$ORIGIN', rpath)
-    logger.info("Patching ELF %s RPATH=%s", path, rpath)
-    subprocess.Popen([STRIP, path]).wait()
-    subprocess.Popen(['patchelf', '--set-rpath', rpath, path]).wait()
+    try:
+        rpath = os.path.relpath(LIBDIR, dirname)
+        rpath = os.path.join('$ORIGIN', rpath)
+        logger.info("Patching ELF %s RPATH=%s", path, rpath)
+        subprocess.check_call(['chrpath', '-r', rpath, path])
+    except subprocess.CalledProcessError:
+        logger.warning("Cannot fix up ELF %s", path)
 
 def fixup_script(path):
     with open(path, 'rb') as fp:
@@ -52,12 +54,11 @@ def fix_all(install):
                 fixup(path)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Usage: %s <install-dir> <strip>" % sys.argv[0])
+    if len(sys.argv) != 2:
+        print("Usage: %s <install-dir>" % sys.argv[0])
         sys.exit(1)
 
     logging.basicConfig(level=logging.INFO)
     INSTALL = sys.argv[1]
     LIBDIR = os.path.join(INSTALL, 'lib')
-    STRIP = sys.argv[2]
     fix_all(INSTALL)

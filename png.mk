@@ -8,10 +8,13 @@ $(PNG_EXTRACT)/Makefile: $(PNG_EXTRACT).extracted $(host-toolchain)
 	&& ./configure \
 		--prefix=$(INSTALL) \
 		--host=$(HOST) \
-		--build=$(BUILD)
+		--build=$(BUILD) \
+		CPPFLAGS="$(CROSS_CPPFLAGS)" \
+		CFLAGS="$(CROSS_CFLAGS)" \
+		LDFLAGS="$(CROSS_LDFLAGS)" \
+		PKG_CONFIG_LIBDIR="$(CROSS_PKG_CONFIG_LIBDIR)" \
+		CC=$(CROSS_CC)
 
-$(PNG): export CC = $(CROSS_CC)
-$(PNG): export PKG_CONFIG_LIBDIR = $(CROSS_PKG_CONFIG_LIBDIR)
 $(PNG): $(PNG_EXTRACT)/Makefile
 	$(MAKE) -C $(PNG_EXTRACT)
 	$(MAKE) -C $(PNG_EXTRACT) install

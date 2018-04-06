@@ -1,22 +1,29 @@
-BZIP2_URL := http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+BZIP2_VERSION := 1.0.6
+BZIP2_URL := http://www.bzip.org/$(BZIP2_VERSION)/bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_TAR := $(call download,$(BZIP2_URL))
 BZIP2_EXTRACT := $(call extract,$(BZIP2_TAR))
-BZIP2 := $(INSTALL)/lib/libbz2.a
+BZIP2 := $(INSTALL)/lib/libbz2.so
 
-$(BZIP2): export CC = $(CROSS_CC)
-$(BZIP2): export PKG_CONFIG_LIBDIR = $(CROSS_PKG_CONFIG_LIBDIR)
-$(BZIP2): $(BZIP2_EXTRACT).extracted $(host-toolchain)
-	$(MAKE) -C $(BZIP2_EXTRACT) -f Makefile-libbz2_so \
-		CC=$(CROSS_CC) \
-		AR=$(CROSS_AR) \
-		RANLIB=$(CROSS_RANLIB)
-	$(MAKE) -C $(BZIP2_EXTRACT) \
-		CC=$(CROSS_CC) \
-		AR=$(CROSS_AR) \
-		RANLIB=$(CROSS_RANLIB) \
-		libbz2.a
-	cp -fd $(BZIP2_EXTRACT)/libbz2.a $(INSTALL)/lib/
-	cp -fd $(BZIP2_EXTRACT)/libbz2.so* $(INSTALL)/lib/
+# Bzip2 make file is so simple we'll just do it ourselves, adding the
+# flags that we need. Otherwise we'd need to patch the makefile a bit.
+
+BZIP2_OBJS := \
+	$(BZIP2_EXTRACT)/blocksort.o \
+	$(BZIP2_EXTRACT)/huffman.o    \
+	$(BZIP2_EXTRACT)/crctable.o   \
+	$(BZIP2_EXTRACT)/randtable.o  \
+	$(BZIP2_EXTRACT)/compress.o   \
+	$(BZIP2_EXTRACT)/decompress.o \
+	$(BZIP2_EXTRACT)/bzlib.o
+
+$(BZIP2_OBJS): $(BZIP2_EXTRACT).extracted $(host-toolchain)
+$(BZIP2_EXTRACT)/%.o: $(BZIP2_EXTRACT)/%.c
+	$(CROSS_CC) $(CROSS_CFLAGS) -O2 -D_FILE_OFFSET_BITS=64 $< -c -o $@
+
+$(BZIP2): $(BZIP2_EXTRACT).extracted $(host-toolchain) $(BZIP2_OBJS)
+	$(CROSS_CC) -shared -Wl,-soname,libbz2.so.1.0 \
+		-o $(dir $@)/libbz2.so.$(BZIP2_VERSION) $(BZIP2_OBJS) $(CROSS_LDFLAGS)
+	ln -s libbz2.so.$(BZIP2_VERSION) $@
 	cp -fd $(BZIP2_EXTRACT)/bzlib.h $(INSTALL)/include
 
 $(compile-host-1): $(BZIP2)

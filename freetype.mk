@@ -13,7 +13,7 @@ $(FREETYPE_EXTRACT)/config.mk: $(FREETYPE_EXTRACT).extracted $(host-toolchain) \
 		--with-png=no \
 		CFLAGS="$(CROSS_CFLAGS)" \
 		CPPFLAGS="$(CROSS_CPPFLAGS) -I$(INSTALL)/include" \
-		LDFLAGS="$(CROSS_CPPFLAGS) -L$(INSTALL)/lib" \
+		LDFLAGS="$(CROSS_LDFLAGS) -L$(INSTALL)/lib" \
 		CC=$(CROSS_CC) \
 		PKG_CONFIG_LIBDIR=$(CROSS_PKG_CONFIG_LIBDIR) \
 		ZLIB_CFLAGS= \

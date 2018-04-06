@@ -24,6 +24,11 @@ CROSS_CPPFLAGS :=
 CROSS_CFLAGS :=
 CROSS_CXXFLAGS := $(CROSS_CFLAGS)
 
+# Getting the $ in $ORIGIN to survive Makefile + configure + etc is a
+# nightmare. We'll just patch it at the end. We'll also add a bunch of extra
+# space so that we can make subdirectories load from the correct root lib.
+CROSS_LDFLAGS := -Wl,-s -Wl,-rpath=XORIGIN/../../../../../../../lib
+
 $(TOOLCHAIN_BIN)/$(CROSS_CC): $(NDK_EXTRACT) $(make-dirs)
 	$(NDK_EXTRACT)/build/tools/make_standalone_toolchain.py \
 		--arch arm \

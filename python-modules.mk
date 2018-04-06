@@ -1,7 +1,7 @@
 $(build-python-modules): $(crossenv)
 	. $(CROSSENV_ACTIVATE) \
 	&& build-pip install --upgrade pip setuptools wheel Cython numpy Tempita \
-	&& cross-expose wheel
+	&& cross-expose wheel setuptools
 	touch $@
 
 
@@ -34,15 +34,12 @@ $(NUMPY_ZIP): $(build-python-modules)
 	&& pip download --no-deps numpy==1.14.2
 	touch $@
 
-$(NUMPY_EXTRACT)/site.cfg: $(NUMPY_EXTRACT).extracted
-	echo '[ALL]' > $@
-	echo 'libraries = m' >> $@
-
-$(NUMPY_WHEEL): $(NUMPY_EXTRACT).extracted $(NUMPY_EXTRACT)/site.cfg \
+$(NUMPY_WHEEL): $(NUMPY_EXTRACT).extracted \
 		$(build-python-modules) | $(WHEELS)
 	. $(CROSSENV_ACTIVATE) \
 	&& cd $(NUMPY_EXTRACT) \
-	&& cross-python setup.py bdist_wheel --dist-dir=$(WHEELS)
+	&& cross-python setup.py build_ext --libraries m \
+			bdist_wheel --dist-dir=$(WHEELS)
 
 $(host-python-wheels): $(NUMPY_WHEEL)
 

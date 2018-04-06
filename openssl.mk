@@ -8,6 +8,9 @@ $(OPENSSL_EXTRACT)/Makefile: $(OPENSSL_EXTRACT).extracted $(host-toolchain)
 	&& sed -i 's/-mandroid//' Configurations/10-main.conf \
 	&& ./Configure \
 		--prefix=$(INSTALL) \
+		$(CROSS_CPPFLAGS) \
+		$(CROSS_CFLAGS) \
+		$(CROSS_LDFLAGS) \
 		android-armeabi
 
 $(OPENSSL_LIB): export CC = $(CROSS_CC)

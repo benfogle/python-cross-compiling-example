@@ -13,10 +13,13 @@ $(LIBFFI_EXTRACT)/Makefile: $(LIBFFI_EXTRACT)/configure $(host-toolchain)
 	&& ./configure \
 		--prefix=$(INSTALL) \
 		--host=$(HOST) \
-		--build=$(BUILD)
+		--build=$(BUILD) \
+		CPPFLAGS="$(CROSS_CPPFLAGS)" \
+		CFLAGS="$(CROSS_CFLAGS)" \
+		LDFLAGS="$(CROSS_LDFLAGS)" \
+		CC="$(CROSS_CC)" \
+		PKG_CONFIG_LIBDIR="$(CROSS_PKG_CONFIG_LIBDIR)"
 
-$(LIBFFI): export CC = $(CROSS_CC)
-$(LIBFFI): export PKG_CONFIG_LIBDIR = $(CROSS_PKG_CONFIG_LIBDIR)
 $(LIBFFI): $(LIBFFI_EXTRACT)/Makefile
 	$(MAKE) -C $(LIBFFI_EXTRACT)
 	$(MAKE) -C $(LIBFFI_EXTRACT) install

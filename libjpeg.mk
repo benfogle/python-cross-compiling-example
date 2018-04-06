@@ -9,6 +9,9 @@ $(JPEG_BUILDDIR)/Makefile: $(JPEG_EXTRACT) $(host-toolchain) | $(JPEG_BUILDDIR)
 		--host=$(HOST) \
 		--prefix=$(INSTALL) \
 		CC=$(CROSS_CC) \
+		CFLAGS="$(CROSS_CFLAGS)" \
+		CPPFLAGS="$(CROSS_CPPFLAGS)" \
+		LDFLAGS="$(CROSS_LDFLAGS)" \
 		PKG_CONFIG_LIBDIR=$(CROSS_PKG_CONFIG_LIBDIR)
 
 $(JPEG_LIB): $(JPEG_BUILDDIR)/Makefile

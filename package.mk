@@ -6,7 +6,7 @@ $(package): $(PACKAGE)
 $(PACKAGE): $(host-python-modules)
 	rm -rf $(PACKAGE_WORKING)
 	cp -rd $(INSTALL) $(PACKAGE_WORKING)
-	$(BUILD_PYTHON) $(FIXUP) $(PACKAGE_WORKING) $(TOOLCHAIN_BIN)/$(CROSS_STRIP)
+	$(BUILD_PYTHON) $(FIXUP) $(PACKAGE_WORKING)
 	tar -C $(dir $(PACKAGE_WORKING)) -cf $@ $(notdir $(PACKAGE_WORKING)) \
 		--exclude=*.la \
 		--exclude=*.a \
