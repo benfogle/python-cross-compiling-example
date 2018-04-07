@@ -23,11 +23,15 @@ HOST_SYSROOT := $(CROSS_SYSROOT)
 CROSS_CPPFLAGS :=
 CROSS_CFLAGS :=
 CROSS_CXXFLAGS := $(CROSS_CFLAGS)
+COMPILE_HOST_PATH := $(TOOLCHAIN_BIN):$(PATH)
 
 # Getting the $ in $ORIGIN to survive Makefile + configure + etc is a
 # nightmare. We'll just patch it at the end. We'll also add a bunch of extra
 # space so that we can make subdirectories load from the correct root lib.
-CROSS_LDFLAGS := -Wl,-s -Wl,-rpath=XORIGIN/../../../../../../../lib
+CROSS_LDFLAGS := \
+	-Wl,-s \
+	-Wl,-rpath=XORIGIN/../../../../../../../lib \
+	$(COMPILER_RT)
 
 $(TOOLCHAIN_BIN)/$(CROSS_CC): $(NDK_EXTRACT) $(make-dirs)
 	$(NDK_EXTRACT)/build/tools/make_standalone_toolchain.py \
@@ -37,12 +41,32 @@ $(TOOLCHAIN_BIN)/$(CROSS_CC): $(NDK_EXTRACT) $(make-dirs)
 		--force \
 		--install-dir $(NDK_STANDALONE)
 
+
+#################################################################
+# We need a library of clang builtins
+# See https://bugs.llvm.org/show_bug.cgi?id=14469
+COMPILER_RT_DIR := $(TOP)/compiler-rt
+COMPILER_RT_SRC := comparedf2.c mulodi4.c
+COMPILER_RT_OBJDIR := $(WORKING)/compiler-rt
+COMPILER_RT_OBJ := $(addprefix $(COMPILER_RT_OBJDIR),$(COMPILER_RT_SRC:.c=.o))
+COMPILER_RT := $(INSTALL)/lib/libcompiler_rt-extras.a
+
+$(COMPILER_RT_OBJDIR)/%.o: $(COMPILER_RT_DIR)/%.c \
+		$(TOOLCHAIN_BIN)/$(CROSS_CC) | $(COMPILER_RT_OBJDIR)
+	$(TOOLCHAIN_BIN)/$(CROSS_CC) -Wall -O2 -c -o $@ $<
+
+$(COMPILER_RT): $(COMPILER_RT_OBJ) $(TOOLCHAIN_BIN)/$(CROSS_CC)
+	$(TOOLCHAIN_BIN)/$(CROSS_AR) rcs $@ $(COMPILER_RT_OBJ)
+
 $(INSTALL)/lib/libc++_shared.so: $(TOOLCHAIN_BIN)/$(CROSS_CC) $(make-dirs)
 	cp -rfd $(NDK_STANDALONE)/$(HOST)/lib/*.so $(INSTALL)/lib
 
-COMPILE_HOST_PATH := $(TOOLCHAIN_BIN):$(PATH)
+
+##########################################################################
+# Ordering. Add CROSS_CC to PATH for stages that need it.
 $(host-toolchain): $(TOOLCHAIN_BIN)/$(CROSS_CC)
 $(host-toolchain): $(INSTALL)/lib/libc++_shared.so
+$(host-toolchain): $(COMPILER_RT)
 $(compile-host): export PATH := $(TOOLCHAIN_BIN):$(PATH)
 $(compile-host-1): export PATH := $(TOOLCHAIN_BIN):$(PATH)
 $(compile-host-2): export PATH := $(TOOLCHAIN_BIN):$(PATH)

@@ -15,3 +15,10 @@ $(PACKAGE): $(host-python-modules)
 		--exclude=man \
 		--exclude=pkgconfig \
 		--transform='s!^[.]/!package/!'
+
+
+clean: clean-package
+
+.PHONY: clean-package
+clean-package:
+	rm -rf $(PACKAGE) $(PACKAGE_WORKING)
