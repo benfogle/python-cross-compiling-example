@@ -25,12 +25,8 @@ CROSS_CFLAGS :=
 CROSS_CXXFLAGS := $(CROSS_CFLAGS)
 COMPILE_HOST_PATH := $(TOOLCHAIN_BIN):$(PATH)
 
-# Getting the $ in $ORIGIN to survive Makefile + configure + etc is a
-# nightmare. We'll just patch it at the end. We'll also add a bunch of extra
-# space so that we can make subdirectories load from the correct root lib.
 CROSS_LDFLAGS := \
 	-Wl,-s \
-	-Wl,-rpath=XORIGIN/../../../../../../../lib \
 	-L$(INSTALL)/lib
 
 
