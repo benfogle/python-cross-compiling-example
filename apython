@@ -1,0 +1,7 @@
+#!/system/bin/sh
+
+BIN_DIR=$(dirname $0)
+BIN_DIR=$(cd "$BIN_DIR" && pwd -P)
+ROOT_DIR=$(dirname $BIN_DIR)
+export LD_LIBRARY_PATH="$ROOT_DIR/lib"
+exec "$BIN_DIR/python3" "$@"
