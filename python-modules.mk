@@ -83,6 +83,8 @@ $(MATPLOTLIB_WHEEL): $(MATPLOTLIB_EXTRACT).extracted $(build-python-modules) \
 	&& cd $(MATPLOTLIB_EXTRACT) \
 	&& echo '[directories]' > setup.cfg \
 	&& echo 'basedirlist = $(CROSS_SYSROOT)/usr,$(INSTALL)' >> setup.cfg \
+	&& echo '[rc_options]' >> setup.cfg \
+	&& echo 'backend = Agg' >> setup.cfg \
 	&& cross-python setup.py build_ext --libraries $(PYTHON_SHLIBS),c++_shared,png \
 		bdist_wheel --dist-dir=$(dir $@)
 
