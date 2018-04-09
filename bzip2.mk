@@ -26,7 +26,9 @@ $(BZIP2_EXTRACT)/%.o: $(BZIP2_EXTRACT)/%.c
 
 $(BZIP2): $(BZIP2_EXTRACT).extracted $(host-toolchain) $(BZIP2_OBJS)
 	$(CROSS_CC) -shared -Wl,-soname,libbz2.so.1.0 \
-		-o $(dir $@)/libbz2.so.$(BZIP2_VERSION) $(BZIP2_OBJS) $(CROSS_LDFLAGS)
+		-o $(dir $@)/libbz2.so.$(BZIP2_VERSION) \
+		$(BZIP2_OBJS) \
+		$(CROSS_LDFLAGS)
 	ln -fs libbz2.so.$(BZIP2_VERSION) $@
 	ln -fs libbz2.so.$(BZIP2_VERSION) $(dir $@)/libbz2.so.1.0
 	cp -fd $(BZIP2_EXTRACT)/bzlib.h $(INSTALL)/include

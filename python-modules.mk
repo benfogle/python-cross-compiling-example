@@ -4,6 +4,7 @@ $(build-python-modules): $(crossenv)
 	&& cross-expose wheel setuptools
 	touch $@
 
+PYTHON_SHLIBS := m,compiler_rt-extras
 
 PILLOW_TAR := $(WORKING)/Pillow-5.0.0.tar.gz
 PILLOW_EXTRACT := $(call extract,$(PILLOW_TAR))
@@ -38,7 +39,7 @@ $(NUMPY_WHEEL): $(NUMPY_EXTRACT).extracted \
 		$(build-python-modules) | $(WHEELS)
 	. $(CROSSENV_ACTIVATE) \
 	&& cd $(NUMPY_EXTRACT) \
-	&& cross-python setup.py build_ext --libraries m \
+	&& cross-python setup.py build_ext --libraries $(PYTHON_SHLIBS) \
 			bdist_wheel --dist-dir=$(WHEELS)
 
 $(host-python-wheels): $(NUMPY_WHEEL)
@@ -60,7 +61,7 @@ $(PANDAS_WHEEL): $(PANDAS_EXTRACT).extracted $(build-python-modules) \
 	. $(CROSSENV_ACTIVATE) \
 	&& cd $(PANDAS_EXTRACT) \
 	&& cross-expose Cython numpy Tempita \
-	&& cross-python setup.py build_ext --libraries m \
+	&& cross-python setup.py build_ext --libraries $(PYTHON_SHLIBS) \
 			bdist_wheel --dist-dir=$(dir $@) \
 	&& cross-expose -u Cython numpy Tempita
 
@@ -82,7 +83,7 @@ $(MATPLOTLIB_WHEEL): $(MATPLOTLIB_EXTRACT).extracted $(build-python-modules) \
 	&& cd $(MATPLOTLIB_EXTRACT) \
 	&& echo '[directories]' > setup.cfg \
 	&& echo 'basedirlist = $(CROSS_SYSROOT)/usr,$(INSTALL)' >> setup.cfg \
-	&& cross-python setup.py build_ext --libraries c++_shared,png \
+	&& cross-python setup.py build_ext --libraries $(PYTHON_SHLIBS),c++_shared,png \
 		bdist_wheel --dist-dir=$(dir $@)
 
 $(host-python-wheels): $(MATPLOTLIB_WHEEL)

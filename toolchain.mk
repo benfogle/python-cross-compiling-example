@@ -31,7 +31,8 @@ COMPILE_HOST_PATH := $(TOOLCHAIN_BIN):$(PATH)
 CROSS_LDFLAGS := \
 	-Wl,-s \
 	-Wl,-rpath=XORIGIN/../../../../../../../lib \
-	$(COMPILER_RT)
+	-L$(INSTALL)/lib
+
 
 $(TOOLCHAIN_BIN)/$(CROSS_CC): $(NDK_EXTRACT) $(make-dirs)
 	$(NDK_EXTRACT)/build/tools/make_standalone_toolchain.py \
@@ -48,15 +49,18 @@ $(TOOLCHAIN_BIN)/$(CROSS_CC): $(NDK_EXTRACT) $(make-dirs)
 COMPILER_RT_DIR := $(TOP)/compiler-rt
 COMPILER_RT_SRC := comparedf2.c mulodi4.c
 COMPILER_RT_OBJDIR := $(WORKING)/compiler-rt
-COMPILER_RT_OBJ := $(addprefix $(COMPILER_RT_OBJDIR),$(COMPILER_RT_SRC:.c=.o))
+COMPILER_RT_OBJ := $(addprefix $(COMPILER_RT_OBJDIR)/,$(COMPILER_RT_SRC:.c=.o))
 COMPILER_RT := $(INSTALL)/lib/libcompiler_rt-extras.a
 
 $(COMPILER_RT_OBJDIR)/%.o: $(COMPILER_RT_DIR)/%.c \
 		$(TOOLCHAIN_BIN)/$(CROSS_CC) | $(COMPILER_RT_OBJDIR)
-	$(TOOLCHAIN_BIN)/$(CROSS_CC) -Wall -O2 -c -o $@ $<
+	$(TOOLCHAIN_BIN)/$(CROSS_CC) -I$(COMPLIER_RT_DIR) -Wall -O2 -c -o $@ $<
 
 $(COMPILER_RT): $(COMPILER_RT_OBJ) $(TOOLCHAIN_BIN)/$(CROSS_CC)
 	$(TOOLCHAIN_BIN)/$(CROSS_AR) rcs $@ $(COMPILER_RT_OBJ)
+
+$(COMPILER_RT_OBJDIR):
+	mkdir -p $@
 
 $(INSTALL)/lib/libc++_shared.so: $(TOOLCHAIN_BIN)/$(CROSS_CC) $(make-dirs)
 	cp -rfd $(NDK_STANDALONE)/$(HOST)/lib/*.so $(INSTALL)/lib
