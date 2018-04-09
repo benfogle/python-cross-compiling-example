@@ -34,10 +34,10 @@ $(compile-host): $(compile-host-2)
 $(compile-host-2): $(compile-host-1)
 
 $(make-dirs): | $(INSTALL) $(INSTALL)/bin $(INSTALL)/lib $(INSTALL)/include \
-		$(WORKING) $(WHEELS) $(STAGE_MARKERS)
+		$(WORKING) $(WHEELS) $(STAGE_MARKERS) $(INSTALL)/examples
 
 $(INSTALL) $(INSTALL)/bin $(INSTALL)/lib $(INSTALL)/include \
-		$(WORKING) $(WHEELS) $(STAGE_MARKERS):
+		$(WORKING) $(WHEELS) $(STAGE_MARKERS) $(INSTALL)/examples:
 	mkdir -p $@
 
 

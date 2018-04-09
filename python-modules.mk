@@ -70,6 +70,7 @@ $(host-python-wheels): $(PANDAS_WHEEL)
 MATPLOTLIB_TAR := $(WORKING)/matplotlib-2.2.2.tar.gz
 MATPLOTLIB_EXTRACT := $(call extract,$(MATPLOTLIB_TAR))
 MATPLOTLIB_WHEEL := $(WHEELS)/matplotlib-2.2.2-cp36-cp36m-linux_arm.whl
+MATPLOTLIB_EXAMPLES := $(INSTALL)/examples/matplotlib
 
 $(MATPLOTLIB_TAR): $(build-python-modules)
 	. $(CROSSENV_ACTIVATE) \
@@ -88,7 +89,15 @@ $(MATPLOTLIB_WHEEL): $(MATPLOTLIB_EXTRACT).extracted $(build-python-modules) \
 	&& cross-python setup.py build_ext --libraries $(PYTHON_SHLIBS),c++_shared,png \
 		bdist_wheel --dist-dir=$(dir $@)
 
-$(host-python-wheels): $(MATPLOTLIB_WHEEL)
+$(MATPLOTLIB_EXAMPLES): $(MATPLOTLIB_EXTRACT).extracted
+	rm -rf $@
+	cp -r $(MATPLOTLIB_EXTRACT)/examples $@
+	find $@ -name '*.py' | \
+		xargs sed -i 's/plt\.show()/plt.savefig("example.png")/'
+	find $@ -name '*.py' | \
+		xargs sed -i '$$aprint("Output in example.png")'
+
+$(host-python-wheels): $(MATPLOTLIB_WHEEL) $(MATPLOTLIB_EXAMPLES)
 
 $(host-python-modules): $(host-python-wheels)
 	. $(CROSSENV_ACTIVATE) \
