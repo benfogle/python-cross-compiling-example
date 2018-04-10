@@ -97,7 +97,8 @@ $(MATPLOTLIB_EXAMPLES): $(MATPLOTLIB_EXTRACT).extracted
 	find $@ -name '*.py' | \
 		xargs sed -i '$$aprint("Output in example.png")'
 
-$(host-python-wheels): $(MATPLOTLIB_WHEEL) $(MATPLOTLIB_EXAMPLES)
+$(host-python-wheels): $(MATPLOTLIB_WHEEL)
+$(examples): $(MATPLOTLIB_EXAMPLES)
 
 $(host-python-modules): $(host-python-wheels)
 	. $(CROSSENV_ACTIVATE) \

@@ -2,7 +2,7 @@ PACKAGE_WORKING := $(TOP)/package
 PACKAGE := $(TOP)/package.tar
 
 $(package): $(PACKAGE)
-$(PACKAGE): $(host-python-modules)
+$(PACKAGE): $(host-python-modules) $(examples)
 	rm -rf $(PACKAGE_WORKING)
 	cp -rd $(INSTALL) $(PACKAGE_WORKING)
 	tar -C $(dir $(PACKAGE_WORKING)) -cf $@ $(notdir $(PACKAGE_WORKING)) \

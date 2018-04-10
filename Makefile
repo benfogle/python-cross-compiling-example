@@ -22,6 +22,7 @@ $(call define-stage,\
 	build-python-modules \
 	host-python-wheels \
 	host-python-modules \
+	examples \
 	package \
 	)
 
