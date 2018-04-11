@@ -7,8 +7,7 @@ ENV_BUILD_PIP := $(CROSSENV)/build/bin/pip
 ENV_CROSS_EXPOSE := $(CROSSENV)/bin/cross-expose
 
 $(CROSSENV_ACTIVATE): $(build-python-interp) $(host-python-interp)
-	#$(BUILD_PYTHON) -m pip install crossenv
-	cd $(BUILD_PYTHON_INSTALL)/lib/python3.6/site-packages && ln -sf $(HOME)/crossenv/crossenv/crossenv crossenv
+	$(BUILD_PYTHON) -m pip install crossenv
 	PATH=$(COMPILE_HOST_PATH) \
 		 $(BUILD_PYTHON) -m crossenv \
 			--sysroot=$(CROSS_SYSROOT) \
