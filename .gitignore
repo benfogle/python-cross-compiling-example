@@ -2,3 +2,5 @@
 /install
 /package
 /package.tar
+__pycache__
+.*.swp

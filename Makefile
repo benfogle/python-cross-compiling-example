@@ -3,8 +3,9 @@ TOP := $(patsubst %/,%,$(dir $(TOP_MAKEFILE)))
 functions_mk := $(TOP)/functions.mk
 all:
 
-INSTALL := $(TOP)/install
+OUTPUT := .
 WORKING := $(TOP)/working
+INSTALL := $(WORKING)/install
 WHEELS := $(WORKING)/wheels
 STAGE_MARKERS := $(WORKING)/stages
 

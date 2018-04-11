@@ -1,4 +1,4 @@
-PACKAGE := $(TOP)/package.tar
+PACKAGE := $(OUTPUT)/package.tar
 
 $(package): $(PACKAGE)
 $(PACKAGE): $(host-python-modules) $(examples)
