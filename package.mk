@@ -9,8 +9,7 @@ $(PACKAGE): $(host-python-modules) $(examples)
 		--exclude=tests \
 		--exclude=man \
 		--exclude=pkgconfig \
-		--exclude=include \
-		--transform='s!^[.]/!package/!'
+		--exclude=include
 
 
 clean: clean-package
