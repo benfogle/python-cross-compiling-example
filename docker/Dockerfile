@@ -18,4 +18,4 @@ RUN apt-get update && \
 
 ENTRYPOINT ["make", "-C", "/source", \
                     "WORKING=/working", \
-                    "PACKAGE=/output/package.tar"]
+                    "OUTPUT=/output"]
