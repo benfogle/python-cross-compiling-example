@@ -1,4 +1,4 @@
-PACKAGE := $(OUTPUT)/package.tar
+PACKAGE := $(OUTPUT)/$(notdir $(INSTALL)).tar
 
 $(package): $(PACKAGE)
 $(PACKAGE): $(host-python-modules) $(examples)

@@ -5,7 +5,7 @@ all:
 
 OUTPUT := .
 WORKING := $(TOP)/working
-INSTALL := $(WORKING)/install
+INSTALL := $(WORKING)/python_android_demo
 WHEELS := $(WORKING)/wheels
 STAGE_MARKERS := $(WORKING)/stages
 
