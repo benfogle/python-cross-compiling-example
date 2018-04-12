@@ -1,3 +1,8 @@
+# To download packages, we use direct URLs from PyPI. We could have used "pip
+# download" as well, but that runs "python setup.py egg_info" on the downloaded
+# package. In the case of matplotlib and maybe others, this triggers a
+# dependency check that fails because we can't give this command arguments.
+
 $(build-python-modules): $(crossenv)
 	. $(CROSSENV_ACTIVATE) \
 	&& build-pip install --upgrade pip setuptools wheel Cython numpy Tempita \
@@ -6,15 +11,10 @@ $(build-python-modules): $(crossenv)
 
 PYTHON_SHLIBS := m,compiler_rt-extras
 
-PILLOW_TAR := $(WORKING)/Pillow-5.0.0.tar.gz
+PILLOW_URL := https://pypi.python.org/packages/0f/57/25be1a4c2d487942c3ed360f6eee7f41c5b9196a09ca71c54d1a33c968d9/Pillow-5.0.0.tar.gz
+PILLOW_TAR := $(call download,$(PILLOW_URL))
 PILLOW_EXTRACT := $(call extract,$(PILLOW_TAR))
 PILLOW_WHEEL := $(WHEELS)/Pillow-5.0.0-cp36-cp36m-linux_arm.whl
-
-$(PILLOW_TAR): $(build-python-modules)
-	. $(CROSSENV_ACTIVATE) \
-	&& cd $(dir $@) \
-	&& pip download --no-deps Pillow==5.0.0
-	touch $@
 
 $(PILLOW_WHEEL): $(PILLOW_EXTRACT).extracted $(build-python-modules) | $(WHEELS)
 	. $(CROSSENV_ACTIVATE) \
@@ -25,15 +25,10 @@ $(PILLOW_WHEEL): $(PILLOW_EXTRACT).extracted $(build-python-modules) | $(WHEELS)
 
 $(host-python-wheels): $(PILLOW_WHEEL)
 
-NUMPY_ZIP := $(WORKING)/numpy-1.14.2.zip
+NUMPY_URL := https://pypi.python.org/packages/0b/66/86185402ee2d55865c675c06a5cfef742e39f4635a4ce1b1aefd20711c13/numpy-1.14.2.zip
+NUMPY_ZIP := $(call download,$(NUMPY_URL))
 NUMPY_EXTRACT := $(call extract,$(NUMPY_ZIP),numpy-1.14.2)
 NUMPY_WHEEL := $(WORKING)/wheels/numpy-1.14.2-cp36-cp36m-linux_arm.whl
-
-$(NUMPY_ZIP): $(build-python-modules)
-	. $(CROSSENV_ACTIVATE) \
-	&& cd $(dir $@) \
-	&& pip download --no-deps numpy==1.14.2
-	touch $@
 
 $(NUMPY_WHEEL): $(NUMPY_EXTRACT).extracted \
 		$(build-python-modules) | $(WHEELS)
@@ -44,15 +39,10 @@ $(NUMPY_WHEEL): $(NUMPY_EXTRACT).extracted \
 
 $(host-python-wheels): $(NUMPY_WHEEL)
 
-PANDAS_TAR := $(WORKING)/pandas-0.22.0.tar.gz
+PANDAS_URL := https://pypi.python.org/packages/08/01/803834bc8a4e708aedebb133095a88a4dad9f45bbaf5ad777d2bea543c7e/pandas-0.22.0.tar.gz
+PANDAS_TAR := $(call download,$(PANDAS_URL))
 PANDAS_EXTRACT := $(call extract,$(PANDAS_TAR))
 PANDAS_WHEEL := $(WHEELS)/pandas-0.22.0-cp36-cp36m-linux_arm.whl
-
-$(PANDAS_TAR): $(build-python-modules)
-	. $(CROSSENV_ACTIVATE) \
-	&& cd $(dir $@) \
-	&& pip download --no-deps Pandas==0.22.0
-	touch $@
 
 # Force this after numpy build so that cross-expose doesn't mess
 # things up in a parallel build.
@@ -67,16 +57,11 @@ $(PANDAS_WHEEL): $(PANDAS_EXTRACT).extracted $(build-python-modules) \
 
 $(host-python-wheels): $(PANDAS_WHEEL)
 
-MATPLOTLIB_TAR := $(WORKING)/matplotlib-2.2.2.tar.gz
+MATPLOTLIB_URL := https://pypi.python.org/packages/ec/ed/46b835da53b7ed05bd4c6cae293f13ec26e877d2e490a53a709915a9dcb7/matplotlib-2.2.2.tar.gz
+MATPLOTLIB_TAR := $(call download,$(MATPLOTLIB_URL))
 MATPLOTLIB_EXTRACT := $(call extract,$(MATPLOTLIB_TAR))
 MATPLOTLIB_WHEEL := $(WHEELS)/matplotlib-2.2.2-cp36-cp36m-linux_arm.whl
 MATPLOTLIB_EXAMPLES := $(INSTALL)/examples/matplotlib
-
-$(MATPLOTLIB_TAR): $(build-python-modules)
-	. $(CROSSENV_ACTIVATE) \
-	&& cd $(dir $@) \
-	&& pip download --no-deps matplotlib==2.2.2
-	touch $@
 
 $(MATPLOTLIB_WHEEL): $(MATPLOTLIB_EXTRACT).extracted $(build-python-modules) \
 		$(compile-host) $(NUMPY_WHEEL) | $(WHEELS)
