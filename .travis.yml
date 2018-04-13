@@ -13,4 +13,4 @@ script:
       docker run --rm -v $PWD/working:/working \
                       -v $PWD/output:/output \
                       -v $PWD:/source \
-                      benfogle/python-cross-compiling-example
+                      benfogle/python-cross-compiling-example -j4
