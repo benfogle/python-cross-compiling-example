@@ -1,0 +1,16 @@
+language: C
+sudo: required
+
+services:
+    - docker
+
+install:
+    - docker pull benfogle/python-cross-compiling-example
+
+script:
+    - |
+      mkdir working output
+      docker run --rm -v $PWD/working:/working \
+                      -v $PWD/output:/output \
+                      -v $PWD:/source \
+                      benfogle/python-cross-compiling-example
