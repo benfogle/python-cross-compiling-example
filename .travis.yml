@@ -17,6 +17,7 @@ script:
       gzip output/python_android_demo.tar
 
 deploy:
+    skip_cleanup: true
     provider: releases
     api_key:
         secure: s2Cl+VD5mmR+KhEPdAszQ+MsHKwd/qS5A1cxh3slJW88FDHsSKg80g3UZsNk1Q10hpvY4Zebuny71fK6gvz9JgtGw5hqyxfKPecIRKLBoG2bg9LztHCYBIGMvoVqaq9J8o89cknf8hJyiQ3LiTuCP1EkRs1Sem+KxjKVWQBGwBz/4ZJUMvyzRbPYEJEf4faG/jeboiY6kWHoGrJLjXVbBRDvupM9gnK0H4qfnjc1dqU+3oWoP+U55UUMmefTo8BvDXFsKA4I5oSYFb0mAn8e6JCZz3smKVgxLFe6cXRqKAvcPCMxQsC7b/dgNnFkq12sStOJe3CKgWtIbQEXrRBElVoSyvto2czjEDM+9Vp/JfxxVMBHOjiAQ1BCbzfU/aOelDSsvm3y7nzQgdYLHdEIuQxSIFT7zd0r0E8GWeRXEA7BsJYg/niVWHacESdf2KZAKzzw+KHrwtA5zGkhqhQ9TMgLyuV8xGOzuF79/XgPQ9G3XpaVIs1tI/UuXoUb89tarUE97rstVm9rQ3SoQ//6L9epo/TOVBRBA83XWW1DmLJ76xkm+YslCM3FIgxyKD+Igxy2GTDMjRNiefESdsMpGJf5EbkApiyYQmxQyWzYvnpRfAkOU9n5z9QxzkV6hve4LySuamqHQJx/Fx1Xs0wOeK0s9jsp9WnMZsFBPeLg88U=
