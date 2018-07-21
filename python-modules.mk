@@ -5,7 +5,7 @@
 
 $(build-python-modules): $(crossenv)
 	. $(CROSSENV_ACTIVATE) \
-	&& build-pip install --upgrade pip setuptools wheel Cython numpy Tempita \
+	&& build-pip install wheel Cython numpy Tempita \
 	&& cross-expose wheel setuptools
 	touch $@
 
