@@ -6,6 +6,7 @@ RUN apt-get update && \
         automake \
         build-essential \
         curl \
+        git \
         libssl-dev \
         libtool \
         texinfo \
