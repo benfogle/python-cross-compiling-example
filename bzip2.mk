@@ -1,5 +1,5 @@
 BZIP2_VERSION := 1.0.6
-BZIP2_URL := http://www.bzip.org/$(BZIP2_VERSION)/bzip2-$(BZIP2_VERSION).tar.gz
+BZIP2_URL := https://downloads.sourceforge.net/project/bzip2/bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_TAR := $(call download,$(BZIP2_URL))
 BZIP2_EXTRACT := $(call extract,$(BZIP2_TAR))
 BZIP2 := $(INSTALL)/lib/libbz2.so
